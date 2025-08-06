@@ -1,6 +1,20 @@
-if(BUILD_FUZZTEST)
+function(try_submodule_sentinel name flag)
+  message(STATUS "${name} package not found; \
+attempting to build from git submodule at ${CMAKE_CURRENT_SOURCE_DIR}/${name}")
+  file(READ "${CMAKE_CURRENT_SOURCE_DIR}/${name}/.git" ${name}_submodule_sentinel)
+  if(NOT ${name}_submodule_sentinel)
+    message(FATAL_ERROR "BUILD_${flag} was requested, but not found and submodule does not exist")
+  endif()
+endfunction()
+
+if(BUILD_FUZZTEST AND NOT fuzztest_FOUND)
+  try_submodule_sentinel(fuzztest FUZZTEST)
+
   add_subdirectory(fuzztest)
-elseif(BUILD_TESTS)
+
+elseif(BUILD_TESTS AND NOT googletest_FOUND)
+  try_submodule_sentinel(googletest TESTS)
+
   # fuzztest includes gtest, but if we're not building fuzztest, build gtest ourselves.
   add_library(gtest STATIC googletest/googletest/src/gtest-all.cc)
   add_library(gtest_main STATIC googletest/googletest/src/gtest_main.cc)
@@ -16,20 +30,19 @@ if(BUILD_LLVM_DWARF)
   add_subdirectory(llvm-project)
 endif()
 
-if(BUILD_MIMALLOC)
-  # Match static/dynamic linking between libbinaryen and mimalloc
-  set(MI_BUILD_STATIC ${BUILD_STATIC_LIB})
-  if (BUILD_STATIC_LIB)
-    set(MI_BUILD_SHARED OFF)
-  endif()
+if(BUILD_MIMALLOC AND NOT mimalloc_FOUND)
+  try_submodule_sentinel(mimalloc MIMALLOC)
+
+  set(MI_BUILD_SHARED "${BUILD_SHARED_LIB}")
+  set(MI_BUILD_STATIC "${BUILD_STATIC_LIB}")
   set(MI_BUILD_OBJECT OFF)
   set(MI_BUILD_TESTS OFF)
   set(MI_INSTALL_TOPLEVEL ON)
   # Do not show debug and warning messages of the allocator by default.
   # (They can still be enabled via MIMALLOC_VERBOSE=1 wasm-opt ...)
   add_compile_definitions(MI_DEBUG=0)
-  
-  if(BUILD_STATIC_LIB)
+
+  if(BUILD_STATIC_LIB AND NOT BUILD_SHARED_LIB)
     # No need to install libmimalloc.a when it's linked statically into the tools.
     add_subdirectory(mimalloc EXCLUDE_FROM_ALL)
   else()

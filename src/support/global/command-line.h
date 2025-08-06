@@ -27,8 +27,6 @@
 #include <utility>
 #include <vector>
 
-#include "wasm.h"
-
 namespace wasm {
 
 class Options {

@@ -392,7 +392,8 @@ etc.
 
 ## Building
 
-Binaryen uses git submodules (at time of writing just for gtest), so before you build you will have to initialize the submodules:
+Binaryen uses git submodules (especially for the mimalloc allocator, but also for gtest and fuzztest
+test support), so before you build you will have to initialize the submodules:
 
 ```bash
 git submodule init

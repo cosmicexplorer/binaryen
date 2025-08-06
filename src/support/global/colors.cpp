@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-#include "support/colors.h"
+#include "support/global/colors.h"
 
 #include <cstdlib>
 #include <ostream>

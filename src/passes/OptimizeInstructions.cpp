@@ -48,10 +48,12 @@
 #include <wasm.h>
 
 #include "call-utils.h"
-#include "support/utilities.h"
 
 // TODO: Use the new sign-extension opcodes where appropriate. This needs to be
 // conditionalized on the availability of atomics.
+/* FIXME: the above comment is apparently almost a decade old and the functionality was disabled
+   after breaking. See https://github.com/WebAssembly/binaryen/pull/5676 as well as
+   https://github.com/emscripten-core/emscripten/issues/19121. */
 
 namespace wasm {
 

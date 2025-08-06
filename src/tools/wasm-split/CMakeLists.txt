@@ -5,4 +5,4 @@ set(wasm_split_SOURCES
   instrumenter.cpp
   ${wasm_split_HEADERS}
 )
-binaryen_add_executable(wasm-split "${wasm_split_SOURCES}")
+binaryen_add_executable(wasm-split ${wasm_split_SOURCES})

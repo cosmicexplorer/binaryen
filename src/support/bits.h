@@ -31,6 +31,24 @@
  * avoiding implementations with large lookup tables.
  */
 
+namespace wasm {
+// Type punning needs to be done through this function to avoid undefined
+// behavior: unions and reinterpret_cast aren't valid approaches.
+template<class Destination, class Source>
+inline Destination bit_cast(const Source& source) {
+  static_assert(sizeof(Destination) == sizeof(Source),
+                "bit_cast needs to be between types of the same size");
+  static_assert(std::is_trivial_v<Destination> &&
+                  std::is_standard_layout_v<Destination>,
+                "non-POD bit_cast undefined");
+  static_assert(std::is_trivial_v<Source> && std::is_standard_layout_v<Source>,
+                "non-POD bit_cast undefined");
+  Destination destination;
+  std::memcpy(&destination, &source, sizeof(destination));
+  return destination;
+}
+} // namespace wasm
+
 namespace wasm::Bits {
 
 int popCount(uint8_t);

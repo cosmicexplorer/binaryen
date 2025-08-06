@@ -1,12 +1,32 @@
 # LLVM sources have warnings, ignore them. Otherwise, use options as close
 # as possible to LLVM's defaults.
-foreach(variable CMAKE_C_FLAGS CMAKE_CXX_FLAGS)
-  if(NOT MSVC)
-    set(${variable} "${${variable}} -w -std=c++14 -D_GNU_SOURCE -D_DEBUG -D__STDC_CONSTANT_MACROS -D__STDC_FORMAT_MACROS -D__STDC_LIMIT_MACROS")
-  else()
-    set(${variable} "${${variable}} /w -std:c++14 -D_CRT_SECURE_NO_DEPRECATE -D_CRT_SECURE_NO_WARNINGS -D_CRT_NONSTDC_NO_DEPRECATE -D_CRT_NONSTDC_NO_WARNINGS -D_SCL_SECURE_NO_DEPRECATE -D_SCL_SECURE_NO_WARNINGS -DUNICODE -D_UNICODE -D__STDC_CONSTANT_MACROS -D__STDC_FORMAT_MACROS -D__STDC_LIMIT_MACROS")
-  endif()
-endforeach(variable)
+if(MSVC)
+  # Silence warnings.
+  add_compile_options(/w)
+  add_compile_definitions(
+    _CRT_SECURE_NO_DEPRECATE
+    _CRT_SECURE_NO_WARNINGS
+    _CRT_NONSTDC_NO_DEPRECATE
+    _CRT_NONSTDC_NO_WARNINGS
+    _SCL_SECURE_NO_DEPRECATE
+    _SCL_SECURE_NO_WARNINGS
+    UNICODE
+    _UNICODE
+    __STDC_CONSTANT_MACROS
+    __STDC_FORMAT_MACROS
+    __STDC_LIMIT_MACROS
+  )
+else()
+  # Silence warnings.
+  add_compile_options(-w)
+  add_compile_definitions(
+    _GNU_SOURCE
+    _DEBUG
+    __STDC_CONSTANT_MACROS
+    __STDC_FORMAT_MACROS
+    __STDC_LIMIT_MACROS
+  )
+endif()
 
 SET(llvm_dwarf_SOURCES
   Binary.cpp
@@ -74,3 +94,12 @@ SET(llvm_dwarf_SOURCES
   YAMLTraits.cpp
 )
 add_library(llvm_dwarf OBJECT ${llvm_dwarf_SOURCES})
+set_target_properties(
+  llvm_dwarf PROPERTIES
+  CXX_STANDARD 14
+  POSITION_INDEPENDENT_CODE ON
+)
+# Use SYSTEM to avoid warnings and errors.
+target_include_directories(llvm_dwarf SYSTEM PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+)

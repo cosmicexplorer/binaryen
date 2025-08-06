@@ -8,7 +8,7 @@ set(fuzzing_SOURCES
   ${fuzzing_HEADERS}
 )
 
-binaryen_add_executable(wasm-opt "${fuzzing_SOURCES};wasm-opt.cpp")
+binaryen_add_executable(wasm-opt ${fuzzing_SOURCES} wasm-opt.cpp)
 binaryen_add_executable(wasm-metadce wasm-metadce.cpp)
 binaryen_add_executable(wasm2js wasm2js.cpp)
 binaryen_add_executable(wasm-emscripten-finalize wasm-emscripten-finalize.cpp)
@@ -19,8 +19,8 @@ if(NOT BUILD_EMSCRIPTEN_TOOLS_ONLY)
   binaryen_add_executable(wasm-shell wasm-shell.cpp)
   binaryen_add_executable(wasm-reduce wasm-reduce.cpp)
   binaryen_add_executable(wasm-merge wasm-merge.cpp)
-  binaryen_add_executable(wasm-fuzz-types "${fuzzing_SOURCES};wasm-fuzz-types.cpp")
-  binaryen_add_executable(wasm-fuzz-lattices "${fuzzing_SOURCES};wasm-fuzz-lattices.cpp")
+  binaryen_add_executable(wasm-fuzz-types ${fuzzing_SOURCES} wasm-fuzz-types.cpp)
+  binaryen_add_executable(wasm-fuzz-lattices ${fuzzing_SOURCES} wasm-fuzz-lattices.cpp)
 endif()
 
 add_subdirectory(wasm-split)

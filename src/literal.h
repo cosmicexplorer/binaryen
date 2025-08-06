@@ -22,10 +22,10 @@
 #include <variant>
 
 #include "compiler-support.h"
+#include "support/bits.h"
 #include "support/hash.h"
 #include "support/name.h"
 #include "support/small_vector.h"
-#include "support/utilities.h"
 #include "wasm-type.h"
 
 namespace wasm {

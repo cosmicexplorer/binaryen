@@ -22,7 +22,6 @@
 #include <unordered_map>
 
 #include "support/name.h"
-#include "support/utilities.h"
 #include "wasm-type.h"
 #include "wasm.h"
 

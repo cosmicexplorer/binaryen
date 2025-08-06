@@ -15,9 +15,10 @@
  */
 
 #include "support/command-line.h"
-#include "config.h"
-#include "support/debug.h"
-#include "support/path.h"
+#include "support/global/debug.h"
+#include "support/global/path.h"
+
+#include "binaryen-global-config.h"
 
 #ifdef USE_WSTRING_PATHS
 #ifndef NOMINMAX

@@ -17,4 +17,4 @@ set(wasm_SOURCES
   wasm-validator.cpp
   ${wasm_HEADERS}
 )
-target_sources(binaryen PRIVATE ${wasm_SOURCES})
+add_library(wasm OBJECT ${wasm_SOURCES})

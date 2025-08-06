@@ -18,7 +18,7 @@
 // Command line helpers.
 //
 
-#include "support/path.h"
+#include "support/global/path.h"
 #ifdef USE_WSTRING_PATHS
 #include "windows.h"
 #endif

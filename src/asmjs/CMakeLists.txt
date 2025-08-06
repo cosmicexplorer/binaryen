@@ -5,4 +5,4 @@ set(asmjs_SOURCES
   shared-constants.cpp
   ${asmjs_HEADERS}
 )
-target_sources(binaryen PRIVATE ${asmjs_SOURCES})
+add_library(asmjs OBJECT ${asmjs_SOURCES})

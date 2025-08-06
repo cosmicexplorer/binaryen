@@ -24,8 +24,9 @@ import subprocess
 import sys
 
 # The C++ standard whose features are required to build Binaryen.
-# Keep in sync with CMakeLists.txt CXX_STANDARD
-cxx_standard = 17
+_std_path = os.path.join(os.path.dirname(__file__), '../../cxx-standard.txt')
+with open(_std_path, "r") as f:
+    cxx_standard = int(f.read().strip())
 
 
 def parse_args(args):

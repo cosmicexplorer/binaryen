@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-#include "support/file.h"
-#include "support/debug.h"
-#include "support/path.h"
-#include "support/utilities.h"
+#include "support/global/file.h"
+#include "support/global/debug.h"
+#include "support/global/path.h"
+#include "support/global/utilities.h"
 
 #include <cstdint>
 #include <cstdlib>

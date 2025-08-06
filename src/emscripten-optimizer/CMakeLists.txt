@@ -1,8 +1,8 @@
-FILE(GLOB emscripten-optimizer_HEADERS *.h)
+FILE(GLOB emscripten_optimizer_HEADERS *.h)
 set(emscripten-optimizer_SOURCES
   optimizer-shared.cpp
   parser.cpp
   simple_ast.cpp
-  ${emscripten-optimizer_HEADERS}
+  ${emscripten_optimizer_HEADERS}
 )
-target_sources(binaryen PRIVATE ${emscripten-optimizer_SOURCES})
+add_library(emscripten-optimizer OBJECT ${emscripten_optimizer_SOURCES})
