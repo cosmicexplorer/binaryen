@@ -86,7 +86,7 @@ if(BUILD_SHARED_LIB)
     SOVERSION ${PROJECT_VERSION_MAJOR}
     OUTPUT_NAME ${PROJECT_NAME}
     # We produce a C-compatible library.
-    LINKER_LANGUAGE C
+    LINKER_LANGUAGE CXX
   )
 
   # Disable interposition and resolve Binaryen symbols locally.
@@ -99,7 +99,7 @@ if(BUILD_SHARED_LIB)
   target_link_libraries(binaryen-shared PUBLIC
     Threads::Threads
     $<$<BOOL:${BUILD_MIMALLOC}>:mimalloc>
-    $<$<BOOL:${BUILD_LLVM_DWARF}>:llvm_dwarf>
+    $<$<BOOL:${BUILD_LLVM_DWARF}>:iface_llvm_dwarf>
   )
 endif()
 
@@ -110,7 +110,7 @@ if(BUILD_STATIC_LIB)
   set_target_properties(binaryen-static PROPERTIES
     OUTPUT_NAME ${PROJECT_NAME}
     # We produce a C-compatible library.
-    LINKER_LANGUAGE C
+    LINKER_LANGUAGE CXX
   )
 
   # FIXME: we need to specify sources here!
@@ -121,7 +121,7 @@ if(BUILD_STATIC_LIB)
     Threads::Threads
     # Match static/dynamic linking between libbinaryen and mimalloc.
     $<$<BOOL:${BUILD_MIMALLOC}>:mimalloc-static>
-    $<$<BOOL:${BUILD_LLVM_DWARF}>:llvm_dwarf>
+    $<$<BOOL:${BUILD_LLVM_DWARF}>:iface_llvm_dwarf>
   )
 endif()
 
@@ -163,7 +163,7 @@ function(extract_sources_and_headers_from_api_target from_target to_target)
     FILE_SET delegations TYPE HEADERS FILES ${delegations}
   )
   # Now link the objects which have been accumulating this whole time.
-  target_link_libraries(${to_target} PRIVATE $<TARGET_OBJECTS:${from_target}>)
+  target_link_libraries(${to_target} PRIVATE ${from_target})
 endfunction()
 
 if(BUILD_SHARED_LIB)

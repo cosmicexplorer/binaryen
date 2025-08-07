@@ -10,3 +10,6 @@ target_link_libraries(relooper PUBLIC
   ir
   support
 )
+
+add_library(iface_relooper INTERFACE)
+target_link_libraries(iface_relooper INTERFACE relooper $<TARGET_OBJECTS:relooper>)

@@ -1,4 +1,3 @@
-file(GLOB wasm_HEADERS ../*.h)
 set(wasm_SOURCES
   literal.cpp
   parsing.cpp
@@ -15,11 +14,15 @@ set(wasm_SOURCES
   wasm-type.cpp
   wasm-type-shape.cpp
   wasm-validator.cpp
-  ${wasm_HEADERS}
 )
 add_library(wasm OBJECT ${wasm_SOURCES})
-
 target_link_libraries(wasm PUBLIC
   binaryen-base
   llvm_dwarf
 )
+
+# Create an interface target which forwards all transitive objects:
+# https://cmake.org/cmake/help/latest/command/target_link_libraries.html#id11
+
+add_library(iface_wasm INTERFACE)
+target_link_libraries(iface_wasm INTERFACE wasm $<TARGET_OBJECTS:wasm>)

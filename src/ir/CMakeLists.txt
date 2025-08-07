@@ -34,3 +34,7 @@ target_link_libraries(ir PUBLIC
   cfg
   support
 )
+
+
+add_library(iface_ir INTERFACE)
+target_link_libraries(iface_ir INTERFACE ir $<TARGET_OBJECTS:ir>)

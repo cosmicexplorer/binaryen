@@ -103,3 +103,6 @@ set_target_properties(
 target_include_directories(llvm_dwarf SYSTEM PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
 )
+
+add_library(iface_llvm_dwarf INTERFACE)
+target_link_libraries(iface_llvm_dwarf INTERFACE llvm_dwarf $<TARGET_OBJECTS:llvm_dwarf>)

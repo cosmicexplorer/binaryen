@@ -44,7 +44,16 @@ target_sources(binaryen-c PUBLIC
 
 target_link_libraries(binaryen-c PUBLIC
   binaryen-base
-  asmjs
-  relooper
-  wasm
+  iface_analysis
+  iface_asmjs
+  iface_emscripten-optimizer
+  iface_relooper
+  iface_passes
+  iface_wasm
+  iface_fatal
+  iface_global
+  iface_support
+  iface_parser
+  iface_llvm_dwarf
+  iface_ir
 )

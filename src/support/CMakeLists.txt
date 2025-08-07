@@ -27,7 +27,13 @@ else()
   add_library(support OBJECT ${support_with_suffix_tree_SOURCES})
 endif()
 
-target_link_libraries(support PUBLIC binaryen-base)
+target_link_libraries(support PUBLIC
+  binaryen-base
+  iface_llvm_dwarf
+)
 
 add_subdirectory(fatal)
 add_subdirectory(global)
+
+add_library(iface_support INTERFACE)
+target_link_libraries(iface_support INTERFACE support $<TARGET_OBJECTS:support>)

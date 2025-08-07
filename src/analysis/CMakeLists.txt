@@ -6,3 +6,6 @@ set(analysis_SOURCES
 add_library(analysis OBJECT ${analysis_SOURCES})
 
 target_link_libraries(analysis PUBLIC binaryen-base)
+
+add_library(iface_analysis INTERFACE)
+target_link_libraries(iface_analysis INTERFACE analysis $<TARGET_OBJECTS:analysis>)

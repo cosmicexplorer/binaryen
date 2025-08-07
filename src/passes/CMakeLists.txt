@@ -150,4 +150,10 @@ if(EMSCRIPTEN)
 endif()
 add_library(passes OBJECT ${passes_SOURCES})
 
-target_link_libraries(passes PUBLIC binaryen-base)
+target_link_libraries(passes PUBLIC
+  binaryen-base
+  iface_llvm_dwarf
+)
+
+add_library(iface_passes INTERFACE)
+target_link_libraries(iface_passes INTERFACE passes $<TARGET_OBJECTS:passes>)

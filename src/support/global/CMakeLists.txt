@@ -25,3 +25,7 @@ configure_file(config.h.in binaryen-global-config.h @ONLY)
 target_include_directories(global PRIVATE "${CMAKE_CURRENT_BINARY_DIR}")
 
 target_link_libraries(global PUBLIC binaryen-base)
+
+
+add_library(iface_global INTERFACE)
+target_link_libraries(iface_global INTERFACE global $<TARGET_OBJECTS:global>)
