@@ -24,7 +24,7 @@
 #include "ir/literal-utils.h"
 #include "ir/module-utils.h"
 #include "shared-constants.h"
-#include "support/debug.h"
+#include "support/global/debug.h"
 #include "wasm-builder.h"
 #include "wasm-traversal.h"
 #include "wasm.h"

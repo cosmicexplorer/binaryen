@@ -26,7 +26,7 @@
 #include "ir/type-updating.h"
 #include "pass.h"
 #include "passes/passes.h"
-#include "support/colors.h"
+#include "support/global/colors.h"
 #include "wasm-debug.h"
 #include "wasm-io.h"
 #include "wasm-validator.h"

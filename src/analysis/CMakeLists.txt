@@ -4,3 +4,5 @@ set(analysis_SOURCES
   ${analysis_HEADERS}
 )
 add_library(analysis OBJECT ${analysis_SOURCES})
+
+target_link_libraries(analysis PUBLIC binaryen-base)

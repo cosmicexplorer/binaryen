@@ -20,9 +20,8 @@
 #include <iostream>
 #include <string>
 
-#include "compiler-support.h"
+#include "compat/compiler-support.h"
 #include "threads.h"
-#include "utilities.h"
 
 // debugging tools
 

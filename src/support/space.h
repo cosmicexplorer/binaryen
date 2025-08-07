@@ -17,7 +17,6 @@
 #ifndef wasm_support_space_h
 #define wasm_support_space_h
 
-#include "utilities.h"
 #include <wasm.h>
 
 namespace wasm {

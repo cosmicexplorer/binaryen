@@ -82,8 +82,8 @@
 #include "ir/utils.h"
 #include "opt-utils.h"
 #include "pass.h"
+#include "support/fatal/unreachable.h"
 #include "support/hash.h"
-#include "support/utilities.h"
 #include "wasm-limits.h"
 #include "wasm.h"
 #include <algorithm>

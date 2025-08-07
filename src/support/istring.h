@@ -21,13 +21,13 @@
 #define wasm_support_istring_h
 
 #include <set>
+#include <string>
 #include <string_view>
 #include <unordered_set>
 
 #include <assert.h>
 
 #include "threads.h"
-#include "utilities.h"
 
 namespace wasm {
 

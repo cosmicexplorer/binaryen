@@ -23,7 +23,7 @@
 #include "ir/utils.h"
 #include "pass.h"
 #include "shared-constants.h"
-#include "support/file.h"
+#include "support/global/file.h"
 #include "support/string.h"
 #include "wasm-builder.h"
 #include "wasm.h"

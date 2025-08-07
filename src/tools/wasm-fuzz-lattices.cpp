@@ -36,7 +36,7 @@
 #include "analysis/reaching-definitions-transfer-function.h"
 #include "analysis/transfer-function.h"
 
-#include "support/command-line.h"
+#include "support/global/command-line.h"
 #include "tools/fuzzing.h"
 #include "tools/fuzzing/random.h"
 

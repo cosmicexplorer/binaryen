@@ -15,12 +15,13 @@
  */
 
 #include "support/global/file.h"
+#include "support/fatal/fatal.h"
 #include "support/global/debug.h"
 #include "support/global/path.h"
-#include "support/global/utilities.h"
 
 #include <cstdint>
 #include <cstdlib>
+#include <cstring>
 #include <iostream>
 #include <limits>
 
@@ -36,7 +37,9 @@ std::vector<char> wasm::read_stdin() {
   return input;
 }
 
-template<typename T> struct do_read_stdin { T operator()(); };
+template<typename T> struct do_read_stdin {
+  T operator()();
+};
 
 template<> std::vector<char> do_read_stdin<std::vector<char>>::operator()() {
   return wasm::read_stdin();

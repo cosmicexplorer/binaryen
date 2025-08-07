@@ -1,7 +1,7 @@
 #include <iostream>
 
 #include "parser/wat-parser.h"
-#include "support/colors.h"
+#include "support/global/colors.h"
 #include "wasm.h"
 #include "gtest/gtest.h"
 

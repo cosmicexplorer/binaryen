@@ -27,5 +27,7 @@ else()
   add_library(support OBJECT ${support_with_suffix_tree_SOURCES})
 endif()
 
+target_link_libraries(support PUBLIC binaryen-base)
+
 add_subdirectory(fatal)
 add_subdirectory(global)

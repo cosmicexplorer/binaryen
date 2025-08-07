@@ -30,7 +30,7 @@
 #include <set>
 #include <unordered_set>
 
-#include "utilities.h"
+#include "support/fatal/fatal.h"
 
 namespace wasm {
 

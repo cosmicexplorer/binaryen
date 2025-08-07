@@ -1272,7 +1272,7 @@ inline Error createFileError(const Twine &F, size_t Line, Error E) {
   return FileError::build(F, Optional<size_t>(Line), std::move(E));
 }
 
-/// Concatenate a source file path and/or name with a std::error_code 
+/// Concatenate a source file path and/or name with a std::error_code
 /// to form an Error object.
 inline Error createFileError(const Twine &F, std::error_code EC) {
   return createFileError(F, errorCodeToError(EC));

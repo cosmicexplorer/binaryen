@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-#include "support/global/fatal/unreachable.h"
+#include "support/fatal/unreachable.h"
 
 #include <cassert>
 #include <cstdlib>

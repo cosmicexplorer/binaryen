@@ -149,3 +149,5 @@ if(EMSCRIPTEN)
   list(REMOVE_ITEM passes_SOURCES "Outlining.cpp")
 endif()
 add_library(passes OBJECT ${passes_SOURCES})
+
+target_link_libraries(passes PUBLIC binaryen-base)

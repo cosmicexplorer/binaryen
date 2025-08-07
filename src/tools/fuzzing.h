@@ -30,7 +30,7 @@
 #include <ir/names.h>
 #include <ir/public-type-validator.h>
 #include <ir/utils.h>
-#include <support/file.h>
+#include <support/global/file.h>
 #include <tools/optimization-options.h>
 #include <wasm-builder.h>
 

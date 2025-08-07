@@ -16,7 +16,7 @@
 
 #include "support/archive.h"
 
-#include "support/utilities.h"
+#include "support/fatal/fatal.h"
 #include <cstring>
 
 static const char* const magic = "!<arch>\n";

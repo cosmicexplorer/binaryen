@@ -5,3 +5,5 @@ set(interpreter_SOURCES
  ${interpreter_HEADERS}
 )
 add_library(interpreter OBJECT ${interpreter_SOURCES})
+
+target_link_libraries(interpreter PUBLIC binaryen-base)

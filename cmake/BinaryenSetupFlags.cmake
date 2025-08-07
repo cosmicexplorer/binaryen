@@ -128,12 +128,12 @@ function(apply_standard_binaryen_default_warnings)
     "-Wno-dangling-pointer"
     # TODO(https://github.com/WebAssembly/binaryen/pull/2314): Remove these two
     # flags once we resolve the issue.
-    "-Wno-implicit-int-float-conversion"
-    "-Wno-unknown-warning-option"
+    $<$<CXX_COMPILER_ID:CLANG>:-Wno-implicit-int-float-conversion>
+    $<$<CXX_COMPILER_ID:CLANG>:-Wno-unknown-warning-option>
     # we explicitly expect this in the code
     "-Wswitch"
     "-Wimplicit-fallthrough"
-    "-Wnon-virtual-dtor"
+    $<$<COMPILE_LANGUAGE:CXX>:-Wnon-virtual-dtor>
   )
 endfunction()
 

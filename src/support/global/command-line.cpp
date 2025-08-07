@@ -14,7 +14,11 @@
  * limitations under the License.
  */
 
-#include "support/command-line.h"
+#include <algorithm>
+#include <cassert>
+#include <iostream>
+
+#include "support/global/command-line.h"
 #include "support/global/debug.h"
 #include "support/global/path.h"
 
@@ -24,8 +28,8 @@
 #ifndef NOMINMAX
 #define NOMINMAX
 #endif
-#include "windows.h"
 #include "shellapi.h"
+#include "windows.h"
 #endif
 
 using namespace wasm;

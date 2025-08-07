@@ -22,7 +22,7 @@
 //
 
 #include "pass.h"
-#include "support/file.h"
+#include "support/global/file.h"
 #include "wasm-features.h"
 #include "wasm.h"
 

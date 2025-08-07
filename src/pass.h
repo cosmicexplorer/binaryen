@@ -20,7 +20,7 @@
 #include <functional>
 
 #include "mixed_arena.h"
-#include "support/utilities.h"
+#include "support/fatal/fatal.h"
 #include "wasm-traversal.h"
 #include "wasm.h"
 

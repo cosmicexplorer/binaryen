@@ -24,8 +24,8 @@
 #include "asmjs/shared-constants.h"
 #include "ir/module-utils.h"
 #include "shared-constants.h"
+#include "support/fatal/fatal.h"
 #include "support/name.h"
-#include "support/utilities.h"
 #include "wasm-interpreter.h"
 #include "wasm.h"
 

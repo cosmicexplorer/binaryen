@@ -17,11 +17,12 @@
 #ifndef wasm_features_h
 #define wasm_features_h
 
+#include <cassert>
 #include <stdint.h>
 #include <string>
 
-#include "compiler-support.h"
-#include "support/utilities.h"
+#include "compat/compiler-support.h"
+#include "support/fatal/unreachable.h"
 
 namespace wasm {
 

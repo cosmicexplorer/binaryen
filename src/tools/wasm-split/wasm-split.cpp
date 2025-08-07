@@ -21,10 +21,10 @@
 
 #include "ir/module-splitting.h"
 #include "ir/names.h"
-#include "support/file.h"
+#include "support/fatal/fatal.h"
+#include "support/global/file.h"
+#include "support/global/path.h"
 #include "support/name.h"
-#include "support/path.h"
-#include "support/utilities.h"
 #include "wasm-binary.h"
 #include "wasm-builder.h"
 #include "wasm-io.h"

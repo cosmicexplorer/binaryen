@@ -17,7 +17,7 @@
 #ifndef wasm_wasm_emscripten_h
 #define wasm_wasm_emscripten_h
 
-#include "support/file.h"
+#include "support/global/file.h"
 #include "wasm-builder.h"
 #include "wasm.h"
 

@@ -24,8 +24,7 @@
 
 #include "mixed_arena.h"
 #include "shared-constants.h"
-#include "support/colors.h"
-#include "support/utilities.h"
+#include "support/global/colors.h"
 #include "wasm-traversal.h"
 #include "wasm.h"
 

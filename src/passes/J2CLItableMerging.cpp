@@ -32,7 +32,7 @@
 
 #include "ir/type-updating.h"
 #include "pass.h"
-#include "support/utilities.h"
+#include "support/fatal/fatal.h"
 #include "wasm-builder.h"
 #include "wasm-traversal.h"
 #include "wasm-type.h"

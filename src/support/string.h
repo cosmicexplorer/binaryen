@@ -21,7 +21,6 @@
 #ifndef wasm_support_string_h
 #define wasm_support_string_h
 
-#include "support/utilities.h"
 #include <algorithm>
 #include <cctype>
 #include <ostream>

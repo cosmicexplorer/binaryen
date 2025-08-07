@@ -23,7 +23,7 @@
 
 #include <ostream>
 
-#include "support/colors.h"
+#include "support/global/colors.h"
 
 inline std::ostream& doIndent(std::ostream& o, unsigned indent) {
   return o << std::string(indent, ' ');

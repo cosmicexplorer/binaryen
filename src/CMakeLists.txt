@@ -11,7 +11,9 @@ target_sources(binaryen-base PRIVATE
   FILE_SET HEADERS FILES ${binaryen_base_DEFS}
 )
 target_link_libraries(binaryen-base PUBLIC
-  binaryen-library-requirements)
+  binaryen-library-requirements
+  compat
+)
 target_include_directories(binaryen-base PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
 )
@@ -40,5 +42,9 @@ target_sources(binaryen-c PUBLIC
   FILE_SET delegations TYPE HEADERS FILES wasm-delegations.def
 )
 
-target_link_libraries(binaryen-c PUBLIC binaryen-base)
-target_link_libraries(binaryen-c PUBLIC relooper)
+target_link_libraries(binaryen-c PUBLIC
+  binaryen-base
+  asmjs
+  relooper
+  wasm
+)

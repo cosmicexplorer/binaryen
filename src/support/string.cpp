@@ -14,9 +14,12 @@
  * limitations under the License.
  */
 
+#include <cassert>
+#include <cstdint>
 #include <optional>
 #include <ostream>
 
+#include "support/fatal/fatal.h"
 #include "support/string.h"
 
 namespace wasm::String {

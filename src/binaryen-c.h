@@ -3482,7 +3482,7 @@ BINARYEN_API BinaryenSideEffects BinaryenExpressionGetSideEffects(
 // General usage is (1) create a relooper, (2) create blocks, (3) add
 // branches between them, (4) render the output.
 //
-// For more details, see src/cfg/Relooper.h and
+// For more details, see src/cfg/relooper/Relooper.h and
 // https://github.com/WebAssembly/binaryen/wiki/Compiling-to-WebAssembly-with-Binaryen#cfg-api
 
 #ifdef __cplusplus

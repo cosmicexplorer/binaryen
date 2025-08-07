@@ -94,8 +94,8 @@
 
 #include "ir/module-utils.h"
 #include "ir/names.h"
-#include "support/colors.h"
-#include "support/file.h"
+#include "support/global/colors.h"
+#include "support/global/file.h"
 #include "wasm-builder.h"
 #include "wasm-io.h"
 #include "wasm-validator.h"

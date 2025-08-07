@@ -16,6 +16,7 @@
 
 #include "support/json.h"
 #include "support/string.h"
+#include "support/fatal/unreachable.h"
 
 namespace json {
 

@@ -21,12 +21,12 @@
 #include <mutex>
 
 #include "binaryen-c.h"
-#include "cfg/Relooper.h"
+#include "cfg/relooper/Relooper.h"
 #include "ir/utils.h"
 #include "parser/wat-parser.h"
 #include "pass.h"
 #include "shell-interface.h"
-#include "support/colors.h"
+#include "support/global/colors.h"
 #include "support/string.h"
 #include "wasm-binary.h"
 #include "wasm-builder.h"

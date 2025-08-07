@@ -21,8 +21,6 @@
 #include <stddef.h>
 #include <unordered_map>
 
-#include "support/utilities.h"
-
 namespace wasm {
 
 // like std::set, except that begin() -> end() iterates in the

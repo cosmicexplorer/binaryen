@@ -25,7 +25,7 @@
 #include "ir/type-updating.h"
 #include "pass.h"
 #include "support/bits.h"
-#include "support/debug.h"
+#include "support/global/debug.h"
 #include "support/stdckdint.h"
 #include "support/string.h"
 #include "wasm-annotations.h"

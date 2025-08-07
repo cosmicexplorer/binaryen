@@ -20,7 +20,7 @@
 #include <string>
 #include <variant>
 
-#include "support/command-line.h"
+#include "support/global/command-line.h"
 #include "tools/fuzzing/heap-types.h"
 #include "tools/fuzzing/random.h"
 #include "wasm-type-printing.h"

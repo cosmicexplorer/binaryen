@@ -15,8 +15,8 @@
  */
 
 #include "support/bits.h"
-#include "../compiler-support.h"
-#include "support/utilities.h"
+#include "compat/compiler-support.h"
+#include "support/fatal/unreachable.h"
 
 #ifdef _MSC_VER
 #include <intrin.h>

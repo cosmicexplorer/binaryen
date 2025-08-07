@@ -19,7 +19,7 @@
 
 #include "ir/module-utils.h"
 #include "pass.h"
-#include "support/command-line.h"
+#include "support/global/command-line.h"
 
 //
 // Shared options for commandline tools

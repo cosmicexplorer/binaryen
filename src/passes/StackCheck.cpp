@@ -26,7 +26,7 @@
 #include "ir/names.h"
 #include "pass.h"
 #include "shared-constants.h"
-#include "support/debug.h"
+#include "support/global/debug.h"
 #include "wasm-emscripten.h"
 
 #define DEBUG_TYPE "stack-check"

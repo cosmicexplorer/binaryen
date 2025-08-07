@@ -15,7 +15,7 @@
  */
 
 #include "source-map.h"
-#include "support/colors.h"
+#include "support/global/colors.h"
 #include "support/json.h"
 
 namespace wasm {

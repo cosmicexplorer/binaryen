@@ -22,9 +22,9 @@
 #include "optimization-options.h"
 #include "parser/wat-parser.h"
 #include "pass.h"
-#include "support/colors.h"
-#include "support/command-line.h"
-#include "support/file.h"
+#include "support/global/colors.h"
+#include "support/global/command-line.h"
+#include "support/global/file.h"
 
 using namespace cashew;
 using namespace wasm;

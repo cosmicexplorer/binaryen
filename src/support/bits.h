@@ -31,6 +31,8 @@
  * avoiding implementations with large lookup tables.
  */
 
+#include <cstring>
+
 namespace wasm {
 // Type punning needs to be done through this function to avoid undefined
 // behavior: unions and reinterpret_cast aren't valid approaches.

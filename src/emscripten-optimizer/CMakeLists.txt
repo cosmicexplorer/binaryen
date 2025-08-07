@@ -6,3 +6,5 @@ set(emscripten_optimizer_SOURCES
   ${emscripten_optimizer_HEADERS}
 )
 add_library(emscripten-optimizer OBJECT ${emscripten_optimizer_SOURCES})
+
+target_link_libraries(emscripten-optimizer PUBLIC binaryen-base)

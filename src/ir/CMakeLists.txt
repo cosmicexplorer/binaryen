@@ -27,3 +27,10 @@ set(ir_SOURCES
   ${ir_HEADERS}
 )
 add_library(ir OBJECT ${ir_SOURCES})
+
+target_link_libraries(ir PUBLIC
+  analysis
+  asmjs
+  cfg
+  support
+)

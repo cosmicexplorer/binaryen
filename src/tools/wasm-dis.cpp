@@ -19,8 +19,8 @@
 //
 
 #include "source-map.h"
-#include "support/colors.h"
-#include "support/file.h"
+#include "support/global/colors.h"
+#include "support/global/file.h"
 #include "wasm-io.h"
 
 #include "tool-options.h"

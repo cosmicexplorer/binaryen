@@ -6,3 +6,5 @@ set(asmjs_SOURCES
   ${asmjs_HEADERS}
 )
 add_library(asmjs OBJECT ${asmjs_SOURCES})
+
+target_link_libraries(asmjs PUBLIC binaryen-base)

@@ -23,9 +23,9 @@
 
 #include "abi/js.h"
 #include "ir/trapping.h"
-#include "support/colors.h"
-#include "support/debug.h"
-#include "support/file.h"
+#include "support/global/colors.h"
+#include "support/global/debug.h"
+#include "support/global/file.h"
 #include "tool-options.h"
 #include "wasm-binary.h"
 #include "wasm-emscripten.h"

@@ -5,3 +5,5 @@ set(support_fatal_SOURCES
 )
 
 add_library(fatal OBJECT ${support_fatal_SOURCES})
+
+target_link_libraries(fatal PUBLIC binaryen-base)

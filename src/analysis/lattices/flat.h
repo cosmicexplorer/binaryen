@@ -24,7 +24,7 @@
 #endif
 
 #include "../lattice.h"
-#include "support/utilities.h"
+#include "support/fatal/unreachable.h"
 
 namespace wasm::analysis {
 

@@ -18,7 +18,7 @@
 #include <iomanip>
 #include <ir/module-utils.h>
 #include <pass.h>
-#include <support/colors.h>
+#include <support/global/colors.h>
 #include <wasm-binary.h>
 #include <wasm.h>
 

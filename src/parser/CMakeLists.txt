@@ -13,3 +13,5 @@ set(parser_SOURCES
  ${parser_HEADERS}
 )
 add_library(parser OBJECT ${parser_SOURCES})
+
+target_link_libraries(parser PUBLIC binaryen-base)

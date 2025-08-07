@@ -27,7 +27,7 @@
 #include "ir/element-utils.h"
 #include "ir/import-utils.h"
 #include "pass.h"
-#include "support/debug.h"
+#include "support/global/debug.h"
 #include "support/insert_ordered.h"
 #include "wasm-builder.h"
 

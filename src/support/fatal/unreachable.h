@@ -17,7 +17,7 @@
 #ifndef wasm_support_fatal_unreachable_h
 #define wasm_support_fatal_unreachable_h
 
-#include "compiler-support.h"
+#include "compat/compiler-support.h"
 
 namespace wasm {
 

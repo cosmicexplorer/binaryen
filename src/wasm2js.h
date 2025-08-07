@@ -43,7 +43,7 @@
 #include "mixed_arena.h"
 #include "passes/passes.h"
 #include "support/base64.h"
-#include "support/file.h"
+#include "support/global/file.h"
 #include "wasm-builder.h"
 #include "wasm-io.h"
 #include "wasm-validator.h"

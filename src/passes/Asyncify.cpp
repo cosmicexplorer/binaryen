@@ -327,7 +327,7 @@
 #include "ir/utils.h"
 #include "pass.h"
 #include "passes/pass-utils.h"
-#include "support/file.h"
+#include "support/global/file.h"
 #include "support/string.h"
 #include "wasm-builder.h"
 #include "wasm.h"

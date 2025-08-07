@@ -18,3 +18,8 @@ set(wasm_SOURCES
   ${wasm_HEADERS}
 )
 add_library(wasm OBJECT ${wasm_SOURCES})
+
+target_link_libraries(wasm PUBLIC
+  binaryen-base
+  llvm_dwarf
+)

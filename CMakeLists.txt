@@ -14,7 +14,7 @@ include("cmake/cmake-env-requirements.cmake")
 
 project(binaryen
   VERSION 0.0.0
-  LANGUAGES CXX
+  LANGUAGES C CXX
   DESCRIPTION "A compiler and toolchain infrastructure library for WebAssembly."
   HOMEPAGE_URL "https://github.com/WebAssembly/binaryen"
 )
@@ -70,6 +70,11 @@ set_target_properties(binaryen-library-requirements
 target_compile_features(binaryen-library-requirements INTERFACE
   cxx_std_${binaryen_REQUIRED_CXX_STANDARD})
 
+# TODO:
+# (1) turn on assertions, but only for executables (not libraries)
+# (2) precompiled headers
+# (3) LTO
+# (4) improved in-target parallelism by examining internal header relationships
 
 ## Declare our exported library artifacts.
 if(BUILD_SHARED_LIB)
@@ -80,9 +85,8 @@ if(BUILD_SHARED_LIB)
     VERSION ${PROJECT_VERSION}
     SOVERSION ${PROJECT_VERSION_MAJOR}
     OUTPUT_NAME ${PROJECT_NAME}
-    # This is needed because we construct these without any source files of their own, so cmake is
-    # unable to infer it as it would expect to.
-    LINKER_LANGUAGE CXX
+    # We produce a C-compatible library.
+    LINKER_LANGUAGE C
   )
 
   # Disable interposition and resolve Binaryen symbols locally.
@@ -105,16 +109,15 @@ if(BUILD_STATIC_LIB)
 
   set_target_properties(binaryen-static PROPERTIES
     OUTPUT_NAME ${PROJECT_NAME}
-    # This is needed because we construct these without any source files of their own, so cmake is
-    # unable to infer it as it would expect to.
-    LINKER_LANGUAGE CXX
+    # We produce a C-compatible library.
+    LINKER_LANGUAGE C
   )
 
   # FIXME: we need to specify sources here!
   target_compile_definitions(binaryen-static PRIVATE BUILD_STATIC_LIBRARY)
 
   # Conversely, we can keep all these deps to ourself in the static library.
-  target_link_libraries(binaryen-shared PUBLIC
+  target_link_libraries(binaryen-static PUBLIC
     Threads::Threads
     # Match static/dynamic linking between libbinaryen and mimalloc.
     $<$<BOOL:${BUILD_MIMALLOC}>:mimalloc-static>
@@ -137,7 +140,8 @@ endif()
 function(binaryen_add_executable)
   list(POP_FRONT ARGV name)
   add_executable("${name}" ${ARGV})
-  target_link_libraries("${name}" PRIVATE binaryen-default)
+  # target_link_libraries("${name}" PRIVATE binaryen-default binaryen-base global fatal)
+  target_link_libraries("${name}" PRIVATE binaryen-static)
   setup_rpath_for_target("${name}")
   install(TARGETS "${name}" DESTINATION ${CMAKE_INSTALL_BINDIR})
 endfunction()

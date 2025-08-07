@@ -15,7 +15,7 @@
  */
 
 #include "asm_v_wasm.h"
-#include "support/utilities.h"
+#include "support/fatal/unreachable.h"
 #include "wasm.h"
 
 namespace wasm {

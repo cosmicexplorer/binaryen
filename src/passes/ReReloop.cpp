@@ -23,7 +23,7 @@
 
 #include <memory>
 
-#include "cfg/Relooper.h"
+#include "cfg/relooper/Relooper.h"
 #include "ir/flat.h"
 #include "ir/utils.h"
 #include "pass.h"

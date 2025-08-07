@@ -54,6 +54,9 @@ struct Strip : public Pass {
   }
 };
 
+/* FIXME: why this new notice? */
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wmaybe-uninitialized"
 Pass* createStripDebugPass() {
   return new Strip([&](const CustomSection& curr) {
     return curr.name == BinaryConsts::CustomSections::Name ||
@@ -73,5 +76,6 @@ Pass* createStripProducersPass() {
     return curr.name == BinaryConsts::CustomSections::Producers;
   });
 }
+#pragma GCC diagnostic pop
 
 } // namespace wasm

@@ -20,6 +20,7 @@
 #include <iterator>
 #include <optional>
 #include <ostream>
+#include <sstream>
 #include <string_view>
 #include <variant>
 

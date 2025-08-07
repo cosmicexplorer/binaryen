@@ -24,7 +24,7 @@
 #include <unordered_set>
 #include <variant>
 
-#include "compiler-support.h"
+#include "compat/compiler-support.h"
 #include "support/hash.h"
 #include "support/insert_ordered.h"
 #include "wasm-features.h"
