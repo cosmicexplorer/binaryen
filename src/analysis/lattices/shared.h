@@ -17,6 +17,7 @@
 #ifndef wasm_analysis_lattices_shared_h
 #define wasm_analysis_lattices_shared_h
 
+#include <cassert>
 #include <cstdint>
 #include <utility>
 

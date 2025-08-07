@@ -18,6 +18,7 @@ project(binaryen
   DESCRIPTION "A compiler and toolchain infrastructure library for WebAssembly."
   HOMEPAGE_URL "https://github.com/WebAssembly/binaryen"
 )
+include(GNUInstallDirs)
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
 
@@ -43,6 +44,11 @@ include(BinaryenDefaultFlags)
 # - Attempt to build them from this repo if unavailable.
 # Error if any deps could not be located or built.
 include(BinaryenSearchDeps)
+
+# After figuring out our dependency situation, we have enough information to produce a pkg-config.
+include(GeneratePkgConfigFile)
+install(FILES "${binaryen_PKG_CONFIG_OUTPUT}"
+  DESTINATION "${CMAKE_INSTALL_LIBDIR}/pkgconfig/")
 
 # Set compile/link flags which depend on user-specified options and/or the specified
 # third-party dependencies.
@@ -72,6 +78,7 @@ target_compile_features(binaryen-library-requirements INTERFACE
 
 # TODO:
 # (1) turn on assertions, but only for executables (not libraries)
+# ==> furthermore, apply BUILD_STATIC_LIBRARY only for source code when building the static lib!
 # (2) precompiled headers
 # (3) LTO
 # (4) improved in-target parallelism by examining internal header relationships
@@ -85,22 +92,20 @@ if(BUILD_SHARED_LIB)
     VERSION ${PROJECT_VERSION}
     SOVERSION ${PROJECT_VERSION_MAJOR}
     OUTPUT_NAME ${PROJECT_NAME}
-    # We produce a C-compatible library.
     LINKER_LANGUAGE CXX
   )
 
   # Disable interposition and resolve Binaryen symbols locally.
-  target_link_options(binaryen-shared PRIVATE
-    $<$<PLATFORM_ID:LINUX>:-Bsymbolic>
-  )
-
-  # Ensure we propagate any dependencies of the exported shared library to anything else that
-  # depends on the shared lib, since the shared lib does not contain its transitive deps.
-  target_link_libraries(binaryen-shared PUBLIC
-    Threads::Threads
-    $<$<BOOL:${BUILD_MIMALLOC}>:mimalloc>
-    $<$<BOOL:${BUILD_LLVM_DWARF}>:iface_llvm_dwarf>
-  )
+  if(LINUX)
+    target_link_options(binaryen-shared PRIVATE -Bsymbolic)
+  endif()
+  # We hard error if we can't find the threading library.
+  target_link_libraries(binaryen-shared PRIVATE Threads::Threads)
+  # We could use $<> generators, but that remains in the build output in a confusing way. Let's just
+  # make sure there's no mention of mimalloc at all if not selected.
+  if(BUILD_MIMALLOC)
+    target_link_libraries(binaryen-shared PRIVATE mimalloc)
+  endif()
 endif()
 
 if(BUILD_STATIC_LIB)
@@ -109,71 +114,82 @@ if(BUILD_STATIC_LIB)
 
   set_target_properties(binaryen-static PROPERTIES
     OUTPUT_NAME ${PROJECT_NAME}
-    # We produce a C-compatible library.
     LINKER_LANGUAGE CXX
   )
 
   # FIXME: we need to specify sources here!
   target_compile_definitions(binaryen-static PRIVATE BUILD_STATIC_LIBRARY)
 
-  # Conversely, we can keep all these deps to ourself in the static library.
-  target_link_libraries(binaryen-static PUBLIC
-    Threads::Threads
+  target_link_libraries(binaryen-static PRIVATE Threads::Threads)
+
+  if(BUILD_MIMALLOC)
     # Match static/dynamic linking between libbinaryen and mimalloc.
-    $<$<BOOL:${BUILD_MIMALLOC}>:mimalloc-static>
-    $<$<BOOL:${BUILD_LLVM_DWARF}>:iface_llvm_dwarf>
-  )
+    target_link_libraries(binaryen-static PRIVATE mimalloc-static)
+  endif()
 endif()
 
+
+## Define a new directory and target property which allow our executables to tell us who they are.
+define_property(TARGET PROPERTY BINARYEN_DEPENDENT_EXES
+  BRIEF_DOCS "Executable targets depending on this library target for the binaryen library API."
+)
 # Any executables or emscripten .js outputs need a specific one of the available outputs to depend
 # against. We default to the shared library if available as dynamic linking reduces executable size.
+define_property(DIRECTORY PROPERTY BINARYEN_DEFAULT_LIB INHERITED
+  BRIEF_DOCS "A library target which provides the binaryen API."
+)
+
 set(ALL_BINARY_INSTALLABLE_TARGETS)
 if(BUILD_SHARED_LIB)
-  list(APPEND ALL_BINARY_INSTALLABLE_TARGETS binaryen-shared)
-  add_library(binaryen-default ALIAS binaryen-shared)
+  set_directory_properties(PROPERTIES BINARYEN_DEFAULT_LIB binaryen-shared)
 elseif(BUILD_STATIC_LIB)
-  list(APPEND ALL_BINARY_INSTALLABLE_TARGETS binaryen-static)
-  add_library(binaryen-default ALIAS binaryen-static)
+  set_directory_properties(PROPERTIES BINARYEN_DEFAULT_LIB binaryen-static)
 endif()
-
-
-function(binaryen_add_executable)
-  list(POP_FRONT ARGV name)
-  add_executable("${name}" ${ARGV})
-  # target_link_libraries("${name}" PRIVATE binaryen-default binaryen-base global fatal)
-  target_link_libraries("${name}" PRIVATE binaryen-static)
-  setup_rpath_for_target("${name}")
-  install(TARGETS "${name}" DESTINATION ${CMAKE_INSTALL_BINDIR})
-endfunction()
-
+if(BUILD_SHARED_LIB)
+  set_target_properties(binaryen-shared PROPERTIES BINARYEN_DEPENDENT_EXES "")
+  list(APPEND ALL_BINARY_INSTALLABLE_TARGETS binaryen-shared)
+endif()
+if(BUILD_STATIC_LIB)
+  set_target_properties(binaryen-static PROPERTIES BINARYEN_DEPENDENT_EXES "")
+  list(APPEND ALL_BINARY_INSTALLABLE_TARGETS binaryen-static)
+endif()
 
 ## Perform the bulk of the build process, including the generation of executables.
 add_subdirectory(src)
 
+# Now get all the exe targets that registered themselves with our specified library target.
+get_directory_property(exe_lib BINARYEN_DEFAULT_LIB)
+get_target_property(built_exes ${exe_lib} BINARYEN_DEPENDENT_EXES)
+foreach(exe IN LISTS built_exes)
+  target_link_libraries(${exe} PRIVATE ${exe_lib})
+  setup_rpath_for_target(${exe})
+endforeach()
+list(APPEND ALL_BINARY_INSTALLABLE_TARGETS ${built_exes})
 
-# Sources.
-function(extract_sources_and_headers_from_api_target from_target to_target)
+# Do some funky magic to get the two specially marked header files(ets) from the wrapper target for
+# the library API in src/ and transfer it onto our specific shared/static library targets.
+function(extract_header_sets_from_api_target from_target to_target)
   # Extract the specially-marked headers.
   get_target_property(delegations ${from_target} HEADER_SET_delegations)
   get_target_property(headers ${from_target} HEADER_SET)
 
-  # Now write the publicly exported headers.
+  # Now write the publicly exported headers, removing the src/ prefix for both sets.
   target_sources(${to_target} PUBLIC
-    FILE_SET HEADERS FILES ${headers}
-    FILE_SET delegations TYPE HEADERS FILES ${delegations}
+    FILE_SET HEADERS BASE_DIRS src FILES ${headers}
+    FILE_SET delegations TYPE HEADERS BASE_DIRS src FILES ${delegations}
   )
-  # Now link the objects which have been accumulating this whole time.
-  target_link_libraries(${to_target} PRIVATE ${from_target})
 endfunction()
 
+# Now link the objects which have been accumulating this whole time.
 if(BUILD_SHARED_LIB)
-  extract_sources_and_headers_from_api_target(binaryen-c binaryen-shared)
+  extract_header_sets_from_api_target(binaryen-c binaryen-shared)
+  target_link_libraries(binaryen-shared PRIVATE binaryen-c)
 endif()
 if(BUILD_STATIC_LIB)
-  extract_sources_and_headers_from_api_target(binaryen-c binaryen-static)
+  extract_header_sets_from_api_target(binaryen-c binaryen-static)
+  target_link_libraries(binaryen-static PRIVATE $<TARGET_OBJECTS:binaryen-c>)
 endif()
 
-include(GNUInstallDirs)
 install(TARGETS ${ALL_BINARY_INSTALLABLE_TARGETS}
   EXPORT ${PROJECT_NAME}
   RUNTIME COMPONENT Runtime

@@ -20,6 +20,7 @@
 #include <string>
 #include <variant>
 
+#include "support/fatal/fatal.h"
 #include "support/global/command-line.h"
 #include "tools/fuzzing/heap-types.h"
 #include "tools/fuzzing/random.h"
