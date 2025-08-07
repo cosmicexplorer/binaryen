@@ -1,6 +1,17 @@
-file(GLOB binaryen_base_HEADERS *.h *.def)
-add_library(binaryen-base OBJECT ${binaryen_base_HEADERS})
-target_link_libraries(binaryen-base PUBLIC binaryen-library-requirements)
+# Define a wrapper for all the common header files in the root used everywhere.
+file(GLOB binaryen_base_HEADERS *.h)
+add_library(binaryen-base OBJECT
+  ${binaryen_base_HEADERS}
+)
+# Need to add these .def files which are used like headers in order to track invalidation, but which
+# add_library() errors out with when used as the initial sources argument.
+file(GLOB binaryen_base_DEFS *.def)
+# Adding these as headers avoids trying to compile against them (setting HEADER_FILE_ONLY).
+target_sources(binaryen-base PRIVATE
+  FILE_SET HEADERS FILES ${binaryen_base_DEFS}
+)
+target_link_libraries(binaryen-base PUBLIC
+  binaryen-library-requirements)
 target_include_directories(binaryen-base PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
 )
@@ -25,7 +36,8 @@ endif()
 set(binaryen_c_HEADERS binaryen-c.h)
 add_library(binaryen-c OBJECT binaryen-c.cpp)
 target_sources(binaryen-c PUBLIC
-  FILE_SET HEADERS FILES ${binaryen_c_HEADERS} wasm-delegations.def
+  FILE_SET HEADERS FILES ${binaryen_c_HEADERS}
+  FILE_SET delegations TYPE HEADERS FILES wasm-delegations.def
 )
 
 target_link_libraries(binaryen-c PUBLIC binaryen-base)

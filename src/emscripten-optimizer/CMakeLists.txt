@@ -1,5 +1,5 @@
 FILE(GLOB emscripten_optimizer_HEADERS *.h)
-set(emscripten-optimizer_SOURCES
+set(emscripten_optimizer_SOURCES
   optimizer-shared.cpp
   parser.cpp
   simple_ast.cpp

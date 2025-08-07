@@ -1,3 +1,14 @@
+# The oldest version of Ubuntu they even display on their site is jammy (22.04LTS), which uses 3.22:
+# https://packages.ubuntu.com/jammy/cmake
+cmake_minimum_required(VERSION 3.22..4.0)
+# Deduplicate library link lines according to the prowess of the linker.
+cmake_policy(SET CMP0156 NEW)   # shared
+cmake_policy(SET CMP0179 NEW)   # static
+# Allow parsing and re-quoting link lines.
+cmake_policy(SET CMP0181 NEW)
+# Always set a value for an empty single-value arg in cmake_parse_arguments().
+cmake_policy(SET CMP0174 NEW)
+
 # Assert build environment prerequisites that must be set before the project() call.
 include("cmake/cmake-env-requirements.cmake")
 
@@ -67,6 +78,9 @@ if(BUILD_SHARED_LIB)
     VERSION ${PROJECT_VERSION}
     SOVERSION ${PROJECT_VERSION_MAJOR}
     OUTPUT_NAME ${PROJECT_NAME}
+    # This is needed because we construct these without any source files of their own, so cmake is
+    # unable to infer it as it would expect to.
+    LINKER_LANGUAGE CXX
   )
 
   # Disable interposition and resolve Binaryen symbols locally.
@@ -89,6 +103,9 @@ if(BUILD_STATIC_LIB)
 
   set_target_properties(binaryen-static PROPERTIES
     OUTPUT_NAME ${PROJECT_NAME}
+    # This is needed because we construct these without any source files of their own, so cmake is
+    # unable to infer it as it would expect to.
+    LINKER_LANGUAGE CXX
   )
 
   # FIXME: we need to specify sources here!
@@ -129,21 +146,39 @@ add_subdirectory(src)
 
 
 # Sources.
-include(GNUInstallDirs)
+function(extract_sources_and_headers_from_api_target from_target to_target)
+  # Extract the specially-marked headers.
+  get_target_property(delegations ${from_target} HEADER_SET_delegations)
+  get_target_property(headers ${from_target} HEADER_SET)
+
+  # Now write the publicly exported headers.
+  target_sources(${to_target} PUBLIC
+    FILE_SET HEADERS FILES ${headers}
+    FILE_SET delegations TYPE HEADERS FILES ${delegations}
+  )
+  # Now link the objects which have been accumulating this whole time.
+  target_link_libraries(${to_target} PRIVATE $<TARGET_OBJECTS:${from_target}>)
+endfunction()
 
 if(BUILD_SHARED_LIB)
-  target_link_libraries(binaryen-shared PUBLIC binaryen-c)
+  extract_sources_and_headers_from_api_target(binaryen-c binaryen-shared)
 endif()
 if(BUILD_STATIC_LIB)
-  target_link_libraries(binaryen-static PRIVATE binaryen-c)
+  extract_sources_and_headers_from_api_target(binaryen-c binaryen-static)
 endif()
 
-list(APPEND ALL_BINARY_INSTALLABLE_TARGETS binaryen-shared)
-install(TARGETS ${ALL_BINARY_INSTALLABLE_TARGETS} EXPORT binaryen
-  RUNTIME LIBRARY ARCHIVE
-  PUBLIC_HEADER
+include(GNUInstallDirs)
+install(TARGETS ${ALL_BINARY_INSTALLABLE_TARGETS}
+  EXPORT ${PROJECT_NAME}
+  RUNTIME COMPONENT Runtime
+  LIBRARY COMPONENT Runtime NAMELINK_COMPONENT Development
+  ARCHIVE COMPONENT Development
+  FILE_SET delegations COMPONENT Development
+  FILE_SET HEADERS COMPONENT Development
 )
-install(EXPORT binaryen DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}-${PROJECT_VERSION})
+install(EXPORT ${PROJECT_NAME}
+  DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}-${PROJECT_VERSION}
+)
 
 # Configure lit tests
 if(BUILD_LIT_TESTS)
