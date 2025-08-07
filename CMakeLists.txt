@@ -23,14 +23,16 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
 ## Process user-specified build configuration options.
 
-# Declare global build configuration options.
-include(BinaryenVars)
 # Declare options that identify which library targets to build and any runtime dependencies.
 include(BinaryenLibVars)
 # Declare options that identify which executables to build.
 include(BinaryenExeVars)
 # Declare options that identify which tests to build, including any third-party test dependencies.
 include(BinaryenTestVars)
+
+# Declare global build options, whose defaults may depend on what outputs we've chosen to build.
+include(BinaryenBuildConfigVars)
+
 # Set default compile and link options for this subdirectory, including warnings.
 # These flags will also be applied to any third-party dependencies we end up building
 # from submodules.

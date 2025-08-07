@@ -1,20 +1,6 @@
-function(try_submodule_sentinel name flag)
-  message(STATUS "${name} package not found; \
-attempting to build from git submodule at ${CMAKE_CURRENT_SOURCE_DIR}/${name}")
-  file(READ "${CMAKE_CURRENT_SOURCE_DIR}/${name}/.git" ${name}_submodule_sentinel)
-  if(NOT ${name}_submodule_sentinel)
-    message(FATAL_ERROR "BUILD_${flag} was requested, but not found and submodule does not exist")
-  endif()
-endfunction()
-
 if(BUILD_FUZZTEST AND NOT fuzztest_FOUND)
-  try_submodule_sentinel(fuzztest FUZZTEST)
-
   add_subdirectory(fuzztest)
-
 elseif(BUILD_TESTS AND NOT googletest_FOUND)
-  try_submodule_sentinel(googletest TESTS)
-
   # fuzztest includes gtest, but if we're not building fuzztest, build gtest ourselves.
   add_library(gtest STATIC googletest/googletest/src/gtest-all.cc)
   add_library(gtest_main STATIC googletest/googletest/src/gtest_main.cc)
@@ -31,8 +17,6 @@ if(BUILD_LLVM_DWARF)
 endif()
 
 if(BUILD_MIMALLOC AND NOT mimalloc_FOUND)
-  try_submodule_sentinel(mimalloc MIMALLOC)
-
   set(MI_BUILD_SHARED "${BUILD_SHARED_LIB}")
   set(MI_BUILD_STATIC "${BUILD_STATIC_LIB}")
   set(MI_BUILD_OBJECT OFF)

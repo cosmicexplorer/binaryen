@@ -1,13 +1,16 @@
+include(FlagHandling)
+
 # We already require cmake >= 3.14, which is noted to have the Git::Git target from the git package:
 # https://cmake.org/cmake/help/latest/module/FindGit.html.
 find_package(Git QUIET REQUIRED)
 
 function(extract_git_rev)
-  cmake_parse_arguments(PARSE_ARGV 0 arg QUIET GIT_DIR "")
-  if(arg_GIT_DIR)
-    set(git_dir_args "--git-dir=${arg_GIT_DIR}")
+  cmake_parse_arguments(PARSE_ARGV 0 arg LOUD GIT_DIR "")
+  if(NOT arg_GIT_DIR)
+    set(arg_GIT_DIR "${PROJECT_SOURCE_DIR}/.git")
   endif()
-  if(arg_QUIET)
+  set(git_dir_args "--git-dir=${arg_GIT_DIR}")
+  if(NOT arg_LOUD)
     set(err_args ERROR_QUIET)
   endif()
   execute_process(
@@ -17,19 +20,37 @@ function(extract_git_rev)
     ${err_args}
     OUTPUT_STRIP_TRAILING_WHITESPACE)
   if(_git_result)
-    if(NOT arg_QUIET)
-      message(WARNING "Unexpected error running git to get current rev for ${git_dir}")
+    if(arg_LOUD)
+      message(WARNING
+        "Unexpected error running git to get current rev for git dir '${arg_GIT_DIR}'")
     endif()
   else()
     set(GIT_REV "${GIT_REV}" PARENT_SCOPE)
   endif()
 endfunction()
+extract_upvar_method_call_into_cache_var(${PROJECT_NAME}_GIT_REV extract_git_rev GIT_REV)
 
-function(extract_git_version git_dir)
-  cmake_parse_arguments(PARSE_ARGV 0 arg "" "GIT_DIR;MATCH_GLOB" "")
-  if(arg_GIT_DIR)
-    set(git_dir_args "--git-dir=${arg_GIT_DIR}")
+function(git_submodule_status)
+  cmake_parse_arguments(PARSE_ARGV 0 arg "" GIT_DIR "")
+  if(NOT arg_GIT_DIR)
+    set(arg_GIT_DIR "${PROJECT_SOURCE_DIR}/.git")
   endif()
+  set(git_dir_args "--git-dir=${arg_GIT_DIR}")
+  execute_process(
+    COMMAND ${GIT_EXECUTABLE} ${git_dir_args} submodule status --quiet
+    RESULT_VARIABLE GIT_SUBMODULE_STATUS
+    ERROR_QUIET)
+  set(GIT_SUBMODULE_STATUS "${GIT_SUBMODULE_STATUS}" PARENT_SCOPE)
+endfunction()
+extract_upvar_method_call_into_cache_var(${PROJECT_NAME}_GIT_SUBMODULE_STATUS
+  git_submodule_status GIT_SUBMODULE_STATUS)
+
+function(extract_git_version)
+  cmake_parse_arguments(PARSE_ARGV 0 arg "" "GIT_DIR;MATCH_GLOB" "")
+  if(NOT arg_GIT_DIR)
+    set(arg_GIT_DIR "${PROJECT_SOURCE_DIR}/.git")
+  endif()
+  set(git_dir_args "--git-dir=${arg_GIT_DIR}")
   if(arg_MATCH_GLOB)
     set(match_args --match "${arg_MATCH_GLOB}")
   endif()
@@ -43,6 +64,8 @@ function(extract_git_version git_dir)
     set(GIT_VERSION ${GIT_VERSION} PARENT_SCOPE)
   endif()
 endfunction()
+extract_upvar_method_call_into_cache_var(${PROJECT_NAME}_GIT_VERSION
+  extract_git_version GIT_VERSION)
 
 function(git_version_suffix)
   set(args BASE_VERSION GIT_DIR TAG_GLOB OUTPUT_VAR)

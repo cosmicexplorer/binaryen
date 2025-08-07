@@ -1,11 +1,32 @@
 # For methods which accept a single argument and write their output into it as a variable name in
 # the parent scope, cache their result into the provided name as an internal cache variable.
 function(extract_upvar_method_call_into_cache_var cache_var method)
-  cmake_language(CALL ${method} _upvar)
-  set(${cache_var} ${_upvar} CACHE INTERNAL "")
+  if(NOT ARGC GREATER_EQUAL 2)
+    message(FATAL_ERROR
+      "require at least 2 args to extract_upvar_method_call_into_cache_var(): got ${ARGV}")
+  endif()
+  if(ARGC GREATER 2)
+    cmake_language(CALL "${ARGV1}")
+    set("${ARGV0}" ${${ARGV2}} CACHE INTERNAL "")
+  else()
+    cmake_language(CALL "${ARGV1}" _upvar)
+    set("${ARGV0}" ${_upvar} CACHE INTERNAL "")
+  endif()
   message(VERBOSE
-    "cached the execution of idempotent upvar method ${method} into internal var ${cache_var}")
-  message(DEBUG "value of ${cache_var} is now: '${${cache_var}}'")
+    "cached the execution of idempotent upvar method ${ARGV1} into internal var ${ARGV0}")
+  message(DEBUG "value of ${ARGV0} is now: '${${ARGV0}}'")
+endfunction()
+
+function(declare_negated_condition_option)
+  if(NOT ARGC EQUAL 3)
+    message(FATAL_ERROR "need exactly 3 args to declare_negated_condition_option(): got '${ARGV}'")
+  endif()
+  if(${ARGV0})
+    set(_default OFF)
+  else()
+    set(_default ON)
+  endif()
+  option("${ARGV1}" "${ARGV2}" "${_default}")
 endfunction()
 
 function(setup_rpath_for_target name)
