@@ -76,6 +76,7 @@ set_target_properties(binaryen-library-requirements
 target_compile_features(binaryen-library-requirements INTERFACE
   cxx_std_${binaryen_REQUIRED_CXX_STANDARD})
 
+
 # TODO:
 # (1) turn on assertions, but only for executables (not libraries)
 # ==> furthermore, apply BUILD_STATIC_LIBRARY only for source code when building the static lib!
@@ -146,10 +147,12 @@ elseif(BUILD_STATIC_LIB)
   set_directory_properties(PROPERTIES BINARYEN_DEFAULT_LIB binaryen-static)
 endif()
 if(BUILD_SHARED_LIB)
+  setup_rpath_for_target(binaryen-shared)
   set_target_properties(binaryen-shared PROPERTIES BINARYEN_DEPENDENT_EXES "")
   list(APPEND ALL_BINARY_INSTALLABLE_TARGETS binaryen-shared)
 endif()
 if(BUILD_STATIC_LIB)
+  setup_rpath_for_target(binaryen-static)
   set_target_properties(binaryen-static PROPERTIES BINARYEN_DEPENDENT_EXES "")
   list(APPEND ALL_BINARY_INSTALLABLE_TARGETS binaryen-static)
 endif()
@@ -164,6 +167,8 @@ foreach(exe IN LISTS built_exes)
   target_link_libraries(${exe} PRIVATE ${exe_lib})
   setup_rpath_for_target(${exe})
 endforeach()
+setup_rpath_for_target(wasm2js)
+list(APPEND built_exes wasm2js)
 list(APPEND ALL_BINARY_INSTALLABLE_TARGETS ${built_exes})
 
 # Do some funky magic to get the two specially marked header files(ets) from the wrapper target for

@@ -1,17 +1,11 @@
-file(READ wasm-intrinsics.wat WASM_INTRINSICS_WAT HEX)
-set(CMAKE_CONFIGURE_DEPENDS wasm-intrinsics.wat)
+# The below condition is intended for removal once the suffix_tree and
+# suffix_tree_node source files no longer depend on LLVM code in the
+# third_party folder
+add_subdirectory(outlining)
 
-string(REGEX MATCHALL "([A-Fa-f0-9][A-Fa-f0-9])" SEPARATED_HEX ${WASM_INTRINSICS_WAT})
-
-foreach (hex IN LISTS SEPARATED_HEX)
-  string(APPEND WASM_INTRINSICS_EMBED "0x${hex},")
-endforeach ()
-string(APPEND WASM_INTRINSICS_EMBED "0x00")
-
-configure_file(WasmIntrinsics.cpp.in WasmIntrinsics.cpp @ONLY)
+add_subdirectory(gen-intrinsics)
 
 FILE(GLOB passes_HEADERS *.h)
-
 set(passes_SOURCES
   param-utils.cpp
   pass.cpp
@@ -46,8 +40,6 @@ set(passes_SOURCES
   GlobalStructInference.cpp
   GlobalTypeOptimization.cpp
   GUFA.cpp
-  hash-stringify-walker.cpp
-  Outlining.cpp
   Heap2Local.cpp
   HeapStoreOptimization.cpp
   I64ToI32Lowering.cpp
@@ -107,7 +99,6 @@ set(passes_SOURCES
   RedundantSetElimination.cpp
   RemoveImports.cpp
   RemoveMemoryInit.cpp
-  RemoveNonJSOps.cpp
   RemoveUnusedBrs.cpp
   RemoveUnusedNames.cpp
   RemoveUnusedModuleElements.cpp
@@ -136,24 +127,30 @@ set(passes_SOURCES
   Unsubtyping.cpp
   Untee.cpp
   Vacuum.cpp
-  ${CMAKE_CURRENT_BINARY_DIR}/WasmIntrinsics.cpp
   ${passes_HEADERS}
 )
-# The below condition is intended for removal once the suffix_tree and
-# suffix_tree_node source files no longer depend on LLVM code in the
-# third_party folder
-if(EMSCRIPTEN)
-  list(REMOVE_ITEM passes_SOURCES ${CMAKE_CURRENT_BINARY_DIR}/stringify-walker.h)
-  list(REMOVE_ITEM passes_SOURCES ${CMAKE_CURRENT_BINARY_DIR}/stringify-walker-impl.h)
-  list(REMOVE_ITEM passes_SOURCES "hash-stringify-walker.cpp")
-  list(REMOVE_ITEM passes_SOURCES "Outlining.cpp")
-endif()
 add_library(passes OBJECT ${passes_SOURCES})
 
-target_link_libraries(passes PUBLIC
+if(NOT BUILD_LLVM_DWARF)
+  target_compile_definitions(passes PRIVATE SKIP_OUTLINING)
+endif()
+
+add_library(intrinsics-ops-pass OBJECT RemoveNonJSOps.cpp)
+target_link_libraries(intrinsics-ops-pass PRIVATE
   binaryen-base
-  iface_llvm_dwarf
+  iface_gen-intrinsics
 )
+add_library(iface_intrinsics-ops-pass INTERFACE)
+target_link_libraries(iface_intrinsics-ops-pass INTERFACE
+  intrinsics-ops-pass $<TARGET_OBJECTS:intrinsics-ops-pass>)
+
+
+target_link_libraries(passes PUBLIC
+  propagate-include-root-from-here
+  $<$<BOOL:${BUILD_LLVM_DWARF}>:iface_outlining>
+  iface_intrinsics-ops-pass
+)
+# target_precompile_headers(passes REUSE_FROM binaryen-base)
 
 add_library(iface_passes INTERFACE)
 target_link_libraries(iface_passes INTERFACE passes $<TARGET_OBJECTS:passes>)

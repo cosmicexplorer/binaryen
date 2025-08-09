@@ -7,6 +7,7 @@ set(asmjs_SOURCES
 )
 add_library(asmjs OBJECT ${asmjs_SOURCES})
 target_link_libraries(asmjs PUBLIC binaryen-base)
+# target_precompile_headers(asmjs REUSE_FROM binaryen-base)
 
 add_library(iface_asmjs INTERFACE)
 target_link_libraries(iface_asmjs INTERFACE asmjs $<TARGET_OBJECTS:asmjs>)

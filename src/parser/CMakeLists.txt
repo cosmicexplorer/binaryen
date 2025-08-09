@@ -13,8 +13,8 @@ set(parser_SOURCES
  ${parser_HEADERS}
 )
 add_library(parser OBJECT ${parser_SOURCES})
-
 target_link_libraries(parser PUBLIC binaryen-base)
+# target_precompile_headers(parser REUSE_FROM binaryen-base)
 
 add_library(iface_parser INTERFACE)
 target_link_libraries(iface_parser INTERFACE parser $<TARGET_OBJECTS:parser>)

@@ -22,7 +22,7 @@
 #include "ir/stack-utils.h"
 #include "ir/utils.h"
 #include "support/intervals.h"
-#include "support/suffix_tree.h"
+#include "support/suffix-tree/suffix_tree.h"
 #include "wasm-ir-builder.h"
 #include "wasm-traversal.h"
 #include <queue>

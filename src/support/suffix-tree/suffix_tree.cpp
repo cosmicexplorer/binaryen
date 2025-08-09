@@ -13,8 +13,8 @@
 //
 //===----------------------------------------------------------------------===//
 
-#include "support/suffix_tree.h"
-#include "support/suffix_tree_node.h"
+#include "support/suffix-tree/suffix_tree.h"
+#include "support/suffix-tree/suffix_tree_node.h"
 #include "llvm/Support/Casting.h"
 
 using namespace llvm;

@@ -2,6 +2,9 @@ include(GitInfo)
 include(FlagHandling)
 
 function(bootstrap_repo_dep package)
+  if(${package}_FOUND)
+    message(DEBUG "package ${package} already found, continuing")
+  endif()
   message(STATUS "attempting to locate or bootstrap dependency '${package}'")
   find_package(${package} QUIET)
 

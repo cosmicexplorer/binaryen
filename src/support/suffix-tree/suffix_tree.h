@@ -41,7 +41,7 @@
 #include <ostream>
 #include <vector>
 
-#include "support/suffix_tree_node.h"
+#include "support/suffix-tree/suffix_tree_node.h"
 
 using namespace llvm;
 

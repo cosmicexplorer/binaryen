@@ -17,8 +17,8 @@
 #include "ir/names.h"
 #include "ir/utils.h"
 #include "pass.h"
-#include "passes/stringify-walker.h"
-#include "support/suffix_tree.h"
+#include "passes/outlining/stringify-walker.h"
+#include "support/suffix-tree/suffix_tree.h"
 #include "wasm.h"
 
 #define OUTLINING_DEBUG 0

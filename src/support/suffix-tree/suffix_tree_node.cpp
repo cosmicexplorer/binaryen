@@ -14,7 +14,7 @@
 //
 //===----------------------------------------------------------------------===//
 
-#include "support/suffix_tree_node.h"
+#include "support/suffix-tree/suffix_tree_node.h"
 #include <cassert>
 
 namespace wasm {

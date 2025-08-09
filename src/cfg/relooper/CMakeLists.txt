@@ -10,6 +10,7 @@ target_link_libraries(relooper PUBLIC
   ir
   support
 )
+# target_precompile_headers(relooper REUSE_FROM binaryen-base)
 
 add_library(iface_relooper INTERFACE)
 target_link_libraries(iface_relooper INTERFACE relooper $<TARGET_OBJECTS:relooper>)

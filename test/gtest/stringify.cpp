@@ -1,7 +1,7 @@
 #include "ir/utils.h"
-#include "passes/stringify-walker.h"
+#include "passes/outlining/stringify-walker.h"
 #include "print-test.h"
-#include "support/suffix_tree.h"
+#include "support/suffix-tree/suffix_tree.h"
 
 using namespace wasm;
 

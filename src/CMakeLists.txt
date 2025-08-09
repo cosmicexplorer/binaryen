@@ -1,8 +1,13 @@
 # Define a wrapper for all the common header files in the root used everywhere.
 file(GLOB binaryen_base_HEADERS *.h)
+list(REMOVE_ITEM binaryen_base_HEADERS binaryen-c.h)
 add_library(binaryen-base OBJECT
   ${binaryen_base_HEADERS}
 )
+# target_precompile_headers(binaryen-base
+#   PRIVATE ${binaryen_base_HEADERS}
+# )
+
 # Need to add these .def files which are used like headers in order to track invalidation, but which
 # add_library() errors out with when used as the initial sources argument.
 file(GLOB binaryen_base_DEFS *.def)
@@ -10,14 +15,16 @@ file(GLOB binaryen_base_DEFS *.def)
 target_sources(binaryen-base PRIVATE
   FILE_SET HEADERS FILES ${binaryen_base_DEFS}
 )
-target_link_libraries(binaryen-base PUBLIC
+
+add_library(propagate-include-root-from-here INTERFACE)
+target_link_libraries(propagate-include-root-from-here INTERFACE
   binaryen-library-requirements
-  compat
 )
-target_include_directories(binaryen-base PUBLIC
+target_include_directories(propagate-include-root-from-here INTERFACE
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
-  $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
 )
+
+target_link_libraries(binaryen-base PUBLIC propagate-include-root-from-here)
 
 add_subdirectory(analysis)
 add_subdirectory(asmjs)

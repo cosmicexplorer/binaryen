@@ -18,8 +18,11 @@ set(wasm_SOURCES
 add_library(wasm OBJECT ${wasm_SOURCES})
 target_link_libraries(wasm PUBLIC
   binaryen-base
-  llvm_dwarf
+  # FIXME: We don't separate this into a subdirectory as before, because it's not something we
+  #        hope to eventually remove, but rather a standard optional feature.
+  $<$<BOOL:${BUILD_LLVM_DWARF}>:llvm_dwarf>
 )
+# target_precompile_headers(wasm REUSE_FROM binaryen-base)
 
 # Create an interface target which forwards all transitive objects:
 # https://cmake.org/cmake/help/latest/command/target_link_libraries.html#id11

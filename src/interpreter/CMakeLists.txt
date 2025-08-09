@@ -5,5 +5,5 @@ set(interpreter_SOURCES
  ${interpreter_HEADERS}
 )
 add_library(interpreter OBJECT ${interpreter_SOURCES})
-
 target_link_libraries(interpreter PUBLIC binaryen-base)
+# target_precompile_headers(interpreter REUSE_FROM binaryen-base)

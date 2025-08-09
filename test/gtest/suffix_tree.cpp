@@ -11,7 +11,7 @@
 
 // clang-format off
 
-#include "support/suffix_tree.h"
+#include "support/suffix-tree/suffix_tree.h"
 #include "llvm/ADT/STLExtras.h"
 #include "llvm/ADT/iterator_range.h"
 #include "gtest/gtest.h"
