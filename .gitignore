@@ -1,3 +1,6 @@
+/.pants.d/
+/dist/
+
 Makefile
 *.pyc
 *~
