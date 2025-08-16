@@ -1,0 +1,4 @@
+autoflake>=2.3
+isort>=6
+yapf>=0.43
+mypy>=0.700

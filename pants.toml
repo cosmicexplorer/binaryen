@@ -25,13 +25,14 @@ diff = true
 
 [python]
 enable_resolves = true
+# default_resolve = 'python-default'
 # (3) make it known that you don't actually have to set a version here. why do we choose 3.12? the answer is unclear
 # oh, apparently the generate-lockfiles goal does have a nice error message for this. but it should be stated
 interpreter_constraints = ['>=3.11']
 
 [python.resolves]
 pants-plugins = 'pants-plugins/lock.txt'
-mypy = 'pants-plugins/mypy-lock.txt'
+tools = 'pants-plugins/tools-lock.txt'
 
 [python.resolves_to_interpreter_constraints]
 # (10) So this is incredibly confusing: https://www.pantsbuild.org/stable/docs/writing-plugins/overview
@@ -40,19 +41,28 @@ mypy = 'pants-plugins/mypy-lock.txt'
 # But it *doesn't* infer the interpreter_constraints:
 # > You will also need to update the relevant python_source / python_sources and python_test / python_tests targets to set resolve="pants-plugins" (along with possibly the interpreter_constraints field).
 # This produces ridiculously confusing error messages. Furthermore, why wouldn't a dependency on the requirements target propagate the correct interpreter_constraints?
+# Finally, this should simply be inferred from the pants version!
 pants-plugins = ['==3.11.*']
 
+[autoflake]
+install_from_resolve = 'tools'
+requirements = ['//pants-plugins/3rdparty/python:tools#autoflake']
+
 [isort]
+install_from_resolve = 'tools'
 config = 'pants-plugins/.isort.cfg'
 args = ['--jobs=-1']
+requirements = ['//pants-plugins/3rdparty/python:tools#isort']
 
 [yapf]
+install_from_resolve = 'tools'
 config = 'pants-plugins/.style.yapf'
 args = ['--parallel']
+requirements = ['//pants-plugins/3rdparty/python:tools#yapf']
 
 [mypy]
-install_from_resolve = 'mypy'
-requirements = ['//pants-plugins/3rdparty/python:mypy']
+install_from_resolve = 'tools'
+requirements = ['//pants-plugins/3rdparty/python:tools#mypy']
 
 # (4)
 # This bit makes absolutely no sense to me. Why will I need to update? Is that just for the example which subclasses a python target or in general?

@@ -1,5 +1,5 @@
-python_requirement(
-  name='mypy',
-  requirements=['mypy>=0.700'],
-  resolve='mypy',
+python_requirements(
+  name='tools',
+  source='tools-reqs.txt',
+  resolve='tools',
 )

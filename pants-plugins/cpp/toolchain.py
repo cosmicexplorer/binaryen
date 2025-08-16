@@ -11,3 +11,40 @@
 
 # See https://www.gnu.org/savannah-checkouts/gnu/autoconf/manual/autoconf-2.72/html_node/Particular-Programs.html#Particular-Programs
 # for all programs predefined.
+
+from pants.option.option_types import StrOption
+from pants.option.subsystem import Subsystem
+from pants.util.strutil import softwrap
+
+
+class PlatformSubsystem(Subsystem):
+  options_scope = 'platform'
+  help = softwrap('''
+    The system types involved in the current compilation process.
+
+    These option names mirror the corresponding terminology and semantics from GNU autoconf: https://www.gnu.org/savannah-checkouts/gnu/autoconf/manual/autoconf-2.72/html_node/Specifying-Target-Triplets.html
+    ''')
+
+  build = StrOption(
+    default=None,
+    advanced=True,
+    help=softwrap('''
+      The type of system which pants is executing on.
+
+      This defaults to the result of running `config.guess`.
+      ''')
+  )
+
+  host = StrOption(
+    default=None,
+    advanced=False,
+    help=softwrap('''
+      The type of system which pants should build output for.
+
+      By default it is the same as the build machine.
+      ''')
+  )
+
+
+def rules():
+  return [*PlatformSubsystem.rules()]
