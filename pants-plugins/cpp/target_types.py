@@ -1,5 +1,4 @@
 from enum import Enum
-from textwrap import dedent
 
 from pants.engine.target import (
   COMMON_TARGET_FIELDS,
@@ -10,6 +9,7 @@ from pants.engine.target import (
   StringSequenceField,
   Target,
 )
+from pants.util.strutil import softwrap
 
 
 _c_source_extensions = ('.c',)
@@ -34,7 +34,7 @@ class CppSourcesField(MultipleSourcesField):
 class CppSources(Target):
   alias = _cpp_sources_alias
   core_fields = (*COMMON_TARGET_FIELDS, Dependencies, CppSourcesField)
-  help = dedent(f'''\
+  help = softwrap(f'''
   A collection of C or C++ source files.
 
   This does not produce an exported library or executable. Use {_cpp_library_alias}() or
@@ -46,7 +46,7 @@ class ExeExportField(SingleSourceField):
   expected_file_extensions = (_c_source_extensions + _cpp_source_extensions)
   required = False
   default = None
-  help = dedent(f'''\
+  help = softwrap(f'''
   A single C or C++ source file.
 
   This may be used to define the `main()` method if not provided by any
@@ -58,7 +58,7 @@ class LibExportField(SingleSourceField):
   expected_file_extensions = (_c_source_extensions + _cpp_source_extensions)
   required = False
   default = None
-  help = dedent('''\
+  help = softwrap('''
   A single C or C++ source file.
 
   This may be used to define global symbols specific to the library target.
@@ -81,7 +81,7 @@ class LibraryLinkage(StringSequenceField):
   alias = 'linkages'
   valid_choices = Linkage
   default = tuple(l.value for l in Linkage)
-  help = dedent('''\
+  help = softwrap('''
   The allowed linking behavior for C or C++ libraries.
 
   This defaults to generating both shared and static linkage. An explicit value can be provided in
