@@ -1,7 +1,66 @@
 [GLOBAL]
 pants_version = "2.27.0"
+pythonpath = ['%(buildroot)s/pants-plugins']
+backend_packages.add = [
+  'cpp',
+  # (2) so do we do backend_packages.add? or backend_packages? what's the difference? this is literally not explained
+  'pants.backend.python',
+  'pants.backend.plugin_development',
+  'pants.backend.python.lint.autoflake',
+  # (9) the link to https://readthedocs.org/projects/isort/ should go to https://pycqa.github.io/isort/.
+  'pants.backend.python.lint.isort',
+  'pants.backend.python.lint.yapf',
+]
 
 [source]
 root_patterns = [
   '/src',
+  # (1) so what's the deal with single or double quoting in the plugins readme? which do we prefer?
+  'pants-plugins',
 ]
+
+[python]
+enable_resolves = true
+# (3) make it known that you don't actually have to set a version here. why do we choose 3.12? the answer is unclear
+# oh, apparently the generate-lockfiles goal does have a nice error message for this. but it should be stated
+interpreter_constraints = ['>=3.11']
+
+[python.resolves]
+pants-plugins = 'pants-plugins/lock.txt'
+
+[python.resolves_to_interpreter_constraints]
+pants-plugins = []
+
+[isort]
+config = 'pants-plugins/.isort.cfg'
+args = ['--jobs=-1']
+
+[yapf]
+config = 'pants-plugins/.style.yapf'
+args = ['--parallel']
+
+# (4)
+# This bit makes absolutely no sense to me. Why will I need to update? Is that just for the example which subclasses a python target or in general?
+# You will also need to update the relevant python_source / python_sources and python_test / python_tests targets to set resolve="pants-plugins" (along with possibly the interpreter_constraints field). See Third-party dependencies for more information.
+
+# (5)
+# Not having cli suggestions sucks!!! spack does this. just generate them!
+
+# (6)
+# 15:44:20.21 [WARN] Can not check requirements for backend: 'cpp'. A __init__.py file is probably missing.
+# did NOT tell me i needed to generate an __init__.py lol
+
+# (7)
+# if you have anything like e.g. a symlink pointing to a valid place, but outside of the current repo, it will error???? why would it care?
+# also why is this an IntrinsicError
+# also i apparently need to delete it entirely???? cranched
+# ; pants generate-lockfiles
+# 15:45:55.25 [ERROR] 1 Exception encountered:
+#
+# Engine traceback:
+#   in `generate-lockfiles` goal
+#
+# IntrinsicError: Failed to read link "/home/cosmicexplorer/tools/binaryen/build-linux-arch-zen3-lkeplip": Absolute symlink: "/tmp/cosmicexplorer/spack-stage/spack-stage-binaryen-123-lkeplip2jqak36mst3aue53nuvglif62"
+
+# (8)
+# apparently it tries to parse bazel BUILD files????? even when i specify in generate-lockfiles which lockfiles to generate????
