@@ -90,12 +90,15 @@ class LibraryLinkage(StringSequenceField):
 
 
 # TODO: https://www.pantsbuild.org/stable/docs/writing-plugins/common-plugin-tasks/allowing-tool-export
+# Consider https://www.gnu.org/software/automake/manual/html_node/A-Library.html, as well as
+# https://www.gnu.org/software/automake/manual/html_node/A-Shared-Library.html.
 class CppLibrary(Target):
   alias = _cpp_library_alias
   core_fields = (*COMMON_TARGET_FIELDS, Dependencies, LibraryLinkage, LibExportField)
   help = 'An exported C ABI library.'
 
 
+# Consider https://www.gnu.org/software/automake/manual/html_node/A-Program.html.
 class CppExecutable(Target):
   alias = _cpp_executable_alias
   core_fields = (*COMMON_TARGET_FIELDS, Dependencies, ExeLinkage, ExeExportField)
