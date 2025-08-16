@@ -80,7 +80,7 @@ class ExeLinkage(StringField):
 class LibraryLinkage(StringSequenceField):
   alias = 'linkages'
   valid_choices = Linkage
-  default = [l.value for l in Linkage]
+  default = tuple(l.value for l in Linkage)
   help = dedent('''\
   The allowed linking behavior for C or C++ libraries.
 
@@ -89,6 +89,7 @@ class LibraryLinkage(StringSequenceField):
   ''')
 
 
+# TODO: https://www.pantsbuild.org/stable/docs/writing-plugins/common-plugin-tasks/allowing-tool-export
 class CppLibrary(Target):
   alias = _cpp_library_alias
   core_fields = (*COMMON_TARGET_FIELDS, Dependencies, LibraryLinkage, LibExportField)

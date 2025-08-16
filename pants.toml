@@ -10,6 +10,7 @@ backend_packages.add = [
   # (9) the link to https://readthedocs.org/projects/isort/ should go to https://pycqa.github.io/isort/.
   'pants.backend.python.lint.isort',
   'pants.backend.python.lint.yapf',
+  'pants.backend.python.typecheck.mypy',
 ]
 
 [source]
@@ -19,6 +20,9 @@ root_patterns = [
   'pants-plugins',
 ]
 
+[generate-lockfiles]
+diff = true
+
 [python]
 enable_resolves = true
 # (3) make it known that you don't actually have to set a version here. why do we choose 3.12? the answer is unclear
@@ -27,9 +31,16 @@ interpreter_constraints = ['>=3.11']
 
 [python.resolves]
 pants-plugins = 'pants-plugins/lock.txt'
+mypy = 'pants-plugins/mypy-lock.txt'
 
 [python.resolves_to_interpreter_constraints]
-pants-plugins = []
+# (10) So this is incredibly confusing: https://www.pantsbuild.org/stable/docs/writing-plugins/overview
+# It says dependency inference will infer a dependency on the requirements target. And it does!
+# > The target generator dynamically sets the version downloaded to match your current pants_version set in pants.toml. Pants's dependency inference understands imports of the pants module and will automatically add dependencies on the generated python_requirement targets where relevant.
+# But it *doesn't* infer the interpreter_constraints:
+# > You will also need to update the relevant python_source / python_sources and python_test / python_tests targets to set resolve="pants-plugins" (along with possibly the interpreter_constraints field).
+# This produces ridiculously confusing error messages. Furthermore, why wouldn't a dependency on the requirements target propagate the correct interpreter_constraints?
+pants-plugins = ['==3.11.*']
 
 [isort]
 config = 'pants-plugins/.isort.cfg'
@@ -38,6 +49,10 @@ args = ['--jobs=-1']
 [yapf]
 config = 'pants-plugins/.style.yapf'
 args = ['--parallel']
+
+[mypy]
+install_from_resolve = 'mypy'
+requirements = ['//pants-plugins/3rdparty/python:mypy']
 
 # (4)
 # This bit makes absolutely no sense to me. Why will I need to update? Is that just for the example which subclasses a python target or in general?
